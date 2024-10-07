@@ -1,7 +1,9 @@
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -15,31 +17,252 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 public class Frame extends JPanel implements ActionListener, MouseListener, KeyListener {
-	Duck d = new Duck();
+	
+	Font bigFont = new Font("Serif", Font.BOLD, 75);
+	
+	JellyFish fish = new JellyFish();
+	Background ground = new Background();
+	ForGround kelp = new ForGround();
+	ForGround kelp2 = new ForGround();
+	ForGround kelp3 = new ForGround();
+	ForGround kelp4 = new ForGround();
+	ForGround kelp5 = new ForGround();
+	ForGround kelp6 = new ForGround();
+	ForGround kelp7 = new ForGround();
+	ForGround kelp8 = new ForGround();
+	
+	bubble bubble = new bubble();
+
+	SpongeBobHouse house = new SpongeBobHouse();
+	spongeBob spongeBobPlain = new spongeBob();
+	
+	int score;
+	int roundTimer;
+	int jellyFishCatch;
+	long time;
+	int stage;
+	int stagePause;
+	boolean start;
+	boolean fishFly;
+	boolean timer;
+	boolean lose;
+	boolean fishHit;
+	boolean nextStage;
+	String spaceToPlay;
+	
+	public void init() {//init variables for the "start" of the game
+		roundTimer = 5;
+		score = 0;
+		time = 0;
+		jellyFishCatch = 0;
+		stage = 1;
+		stagePause = 100;
+		start = true;
+		fishFly = false;
+		timer = false;
+		lose = false;
+		fishHit = true;
+		nextStage = false;
+		spaceToPlay = "Press Space To start";
+		
+		bubble.setY(800);
+		
+		fish.setScale(1, 1);
+		fish.setVx(0);
+		fish.setY(799);
+		fish.setX(400);
+		
+		house.setY(400);
+		house.setX(100);
+		house.setScale(5,5);//house (don't change)
+		
+		ground.setScale(2, 2);//don't change backgroudn resizing
+		
+		kelp.setY(800-200);//kelp (don't change)
+		kelp.setScale(3, 3);
+		
+		kelp2.setScale(3,3);
+		kelp2.setXY(kelp.getWidth()*3, 600);
+		
+		kelp3.setScale(3,3);
+		kelp3.setXY(kelp.getWidth()*3*2, 600);
+		
+		kelp4.setScale(3,3);
+		kelp4.setXY(kelp.getWidth()*3*3, 600);
+		
+		kelp5.setScale(3,3);
+		kelp5.setXY(kelp.getWidth()*3*4, 600);
+		
+		kelp6.setScale(3,3);
+		kelp6.setXY(kelp.getWidth()*3*5, 600);
+
+		kelp7.setScale(3,3);
+		kelp7.setXY(kelp.getWidth()*3*6, 600);
+
+		kelp8.setScale(3,3);
+		kelp8.setXY(kelp.getWidth()*3*7, 600);
+
+		spongeBobPlain.setScale(2, 2);//change variables later
+		spongeBobPlain.setX(400);
+		spongeBobPlain.setY(800);
+		spongeBobPlain.setVx(-5);
+		spongeBobPlain.setVy(0);
+		
+	}
+	
+	public void reset() {//reseting for muliply rounds
+		stage +=1;
+		spaceToPlay = "Stage "+stage;
+		nextStage = true;
+		fishFly = false;
+		start = false;
+		timer = false;
+		fish.setVy(0);
+		fish.setY(799);
+		
+	}
+	
+	
 	
 	public void paint(Graphics g) {
 		super.paintComponent(g);
-		d.paint(g);
+
+
+		//layer obecjts as yoru want them to layer visualy, backroudn fist
+		ground.paint(g);
+		
+		bubble.paint(g);
+		
+		house.paint(g);
+		
+		spongeBobPlain.paint(g);
+		
+		fish.paint(g);//this is the fish making lots of changes later
+		
+		kelp.paint(g);
+		kelp2.paint(g);
+		kelp3.paint(g);
+		kelp4.paint(g);
+		kelp5.paint(g);
+		kelp6.paint(g);
+		kelp7.paint(g);
+		kelp8.paint(g);
+		
+
+		
+		g.setFont(bigFont);
+		g.setColor(Color.black);
+		g.drawString("Time "+this.roundTimer, 400, 65);
+		g.drawString("Score " +this.score,50,65);
+		
+		g.drawString(""+spaceToPlay, 200, 400);
+		g.drawString("Stage " +stage, 800, 65);
+			
+		/*logic statement for fish
+		 * change later
+		 */
+		
+		if (fish.getY()>=800) {
+			spongeBobPlain.setX(fish.getX());
+			spongeBobPlain.setY(800);
+			spongeBobPlain.setVy(-5);
+			fish.setY(799);
+			fish.setVx(0);
+			fish.setVy(0);
+		}
+		
+		
+		if (fish.getY()<=0) {
+			lose = true;
+			spaceToPlay = "Press Space To Play Again";
+			fishFly = false;
+			timer = false;
+			start = true;
+		}
+		
+		if (nextStage) {
+			if (stagePause>0) {
+				stagePause -= 1;
+			}else {
+				stagePause = 1000;
+				roundTimer = 30;
+				spaceToPlay = "";
+				start = true;
+				fishFly = true;
+				timer = true;
+				nextStage = false;
+				fish.setX((int)(Math.random()*1150));
+				fish.setVx((int)((Math.random()-0.5)*20));
+			}
+		}
+		
+		if (spongeBobPlain.getY()<=500) {
+			spongeBobPlain.setVy(0);
+			if(spongeBobPlain.timer>0) {
+				spongeBobPlain.timer -=100;
+				
+			}else {
+				spongeBobPlain.setVy(5);
+				spongeBobPlain.timer = 1000;
+				fishFly = true;
+				fishHit = true;
+				fish.setX((int)(Math.random()*1150));
+				fish.setVx((int)((Math.random()-0.5)*20));
+			}
+			
+		}
+		
+		if (spongeBobPlain.getY()>=800) {
+			spongeBobPlain.setVx(-5);
+		}
+		
+		if (spongeBobPlain.getX()<=0||spongeBobPlain.getX()>=1200-spongeBobPlain.getWidth()) {
+			spongeBobPlain.setVx(spongeBobPlain.getVx()*-1);
+		}
+		
+		if (fish.getX()<=0||fish.getX()>=1200-fish.getWidth()) {
+			fish.setVx(fish.getVx()*-1);
+		}
+		
+		if (fishFly && timer) {
+			fish.setVy(-(stage*2));
+		}
+		
+		time+=20;//timer
+		
+
+			if (roundTimer == 0 ) {
+				reset();
+				
+			}
+		
+		
+		
 	}
-	
+
 	public static void main(String[] arg) {
 		Frame f = new Frame();
 	}
 	
 	public Frame() {
 		JFrame f = new JFrame("Duck Hunt");
-		f.setSize(new Dimension(900, 600));
+		f.setSize(new Dimension(1200, 800));
 		f.setBackground(Color.blue);
 		f.add(this);
 		f.setResizable(false);
 		f.setLayout(new GridLayout(1,2));
 		f.addMouseListener(this);
 		f.addKeyListener(this);
-		Timer t = new Timer(16, this);
+		
+		init();//call init method to give proterties to objects and varables
+		
 		t.start();
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f.setVisible(true);
+		
 	}
+	
+	Timer t = new Timer(16, this);//make timer visible to other methods
 	
 	
 	@Override
@@ -61,9 +284,24 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	}
 
 	@Override
-	public void mousePressed(MouseEvent arg0) {
+	public void mousePressed(MouseEvent mouse) {
 		// TODO Auto-generated method stub
-	
+	//performe a rectangle conlision wth mouse and the object
+		Rectangle rMouse = new Rectangle(mouse.getX()-fish.getWidth(),mouse.getY()-fish.getHeight(),fish.getWidth(),fish.getHeight());
+		//2nd rect for the object
+		Rectangle rMain = new Rectangle(fish.getX(),fish.getY(),fish.getWidth(),fish.getHeight());
+		
+		//chekc if colliding
+		if (rMouse.intersects(rMain)&&fishHit) {
+			System.out.println("hit the fish with mouse");
+			fishFly = false;
+			fish.setVy(5);
+			fish.setVx(0);
+			score += 50;
+			fishHit = false;
+		}
+		
+		
 	}
 
 	@Override
@@ -81,6 +319,16 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	@Override
 	public void keyPressed(KeyEvent arg0) {
 		// TODO Auto-generated method stub
+		if (!timer&&arg0.getKeyCode()==32) {
+			fish.setY(799);
+			fish.setX((int)(Math.random()*1150));
+			timer = true;
+			roundTimer = 5;
+			fishFly = true;
+			spaceToPlay = "";
+			stage = 1;
+			fish.setVx((int)((Math.random()-0.5)*20));
+		}
 		System.out.println(arg0.getKeyCode());
 	}
 
