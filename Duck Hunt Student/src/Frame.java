@@ -41,7 +41,6 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	int jellyFishCatch;
 	long time;
 	int stage;
-	int stagePause;
 	boolean start;
 	boolean fishFly;
 	boolean timer;
@@ -49,14 +48,14 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	boolean fishHit;
 	boolean nextStage;
 	String spaceToPlay;
+	String spaceNextStage;
 	
 	public void init() {//init variables for the "start" of the game
-		roundTimer = 5;
+		roundTimer = 30;
 		score = 0;
 		time = 0;
 		jellyFishCatch = 0;
 		stage = 1;
-		stagePause = 100;
 		start = true;
 		fishFly = false;
 		timer = false;
@@ -115,7 +114,6 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		spaceToPlay = "Stage "+stage;
 		nextStage = true;
 		fishFly = false;
-		start = false;
 		timer = false;
 		fish.setVy(0);
 		fish.setY(799);
@@ -163,7 +161,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		 */
 		
 		if (fish.getY()>=800) {
-			spongeBobPlain.setX(fish.getX());
+			spongeBobPlain.setX(fish.getX()+200);
 			spongeBobPlain.setY(800);
 			spongeBobPlain.setVy(-5);
 			fish.setY(799);
@@ -180,27 +178,12 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 			start = true;
 		}
 		
-		if (nextStage) {
-			if (stagePause>0) {
-				stagePause -= 1;
-			}else {
-				stagePause = 1000;
-				roundTimer = 30;
-				spaceToPlay = "";
-				start = true;
-				fishFly = true;
-				timer = true;
-				nextStage = false;
-				fish.setX((int)(Math.random()*1150));
-				fish.setVx((int)((Math.random()-0.5)*20));
-			}
-		}
+
 		
-		if (spongeBobPlain.getY()<=500) {
+		if (spongeBobPlain.getY()<=500) {//makes sponge bob go up then down
 			spongeBobPlain.setVy(0);
 			if(spongeBobPlain.timer>0) {
-				spongeBobPlain.timer -=100;
-				
+				spongeBobPlain.timer -=200;
 			}else {
 				spongeBobPlain.setVy(5);
 				spongeBobPlain.timer = 1000;
@@ -216,7 +199,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 			spongeBobPlain.setVx(-5);
 		}
 		
-		if (spongeBobPlain.getX()<=0||spongeBobPlain.getX()>=1200-spongeBobPlain.getWidth()) {
+		if (spongeBobPlain.getX()<=0) {
 			spongeBobPlain.setVx(spongeBobPlain.getVx()*-1);
 		}
 		
@@ -230,11 +213,12 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		
 		time+=20;//timer
 		
-
+		if (time%600==0&&timer) {//checks and timer for when round ends
+			roundTimer-=1;
 			if (roundTimer == 0 ) {
 				reset();
-				
 			}
+		}
 		
 		
 		
@@ -323,12 +307,24 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 			fish.setY(799);
 			fish.setX((int)(Math.random()*1150));
 			timer = true;
-			roundTimer = 5;
+			roundTimer = 30;
 			fishFly = true;
 			spaceToPlay = "";
-			stage = 1;
 			fish.setVx((int)((Math.random()-0.5)*20));
 		}
+		
+		if(nextStage&&arg0.getKeyCode()==32) {
+			nextStage = false;
+			fishHit=true;
+			roundTimer = 30;
+			spaceToPlay = "";
+			fishFly = true;
+			timer = true;
+			fish.setX((int)(Math.random()*1150));
+			fish.setVx((int)((Math.random()-0.5)*20));
+		}
+		
+		
 		System.out.println(arg0.getKeyCode());
 	}
 
