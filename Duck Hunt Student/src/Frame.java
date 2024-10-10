@@ -36,12 +36,16 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	SpongeBobHouse house = new SpongeBobHouse();
 	spongeBob spongeBobPlain = new spongeBob();
 	
+//	jellFishFall jellFall = new jellFishFall();//won't be painted
+//	
+//	explosion explosion = new explosion();//won't be painted
+	
 	int score;
 	int roundTimer;
-	int jellyFishCatch;
 	long time;
 	int stage;
 	boolean start;
+	boolean bubbleOn;
 	boolean fishFly;
 	boolean timer;
 	boolean lose;
@@ -54,10 +58,10 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		roundTimer = 30;
 		score = 0;
 		time = 0;
-		jellyFishCatch = 0;
 		stage = 1;
 		start = true;
 		fishFly = false;
+		bubbleOn = false;
 		timer = false;
 		lose = false;
 		fishHit = true;
@@ -117,7 +121,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		timer = false;
 		fish.setVy(0);
 		fish.setY(799);
-		
+		fish.changePicture("imgs/jellFish.gif");
 	}
 	
 	
@@ -129,13 +133,13 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		//layer obecjts as yoru want them to layer visualy, backroudn fist
 		ground.paint(g);
 		
-		bubble.paint(g);
-		
 		house.paint(g);
 		
 		spongeBobPlain.paint(g);
 		
 		fish.paint(g);//this is the fish making lots of changes later
+		
+		bubble.paint(g);
 		
 		kelp.paint(g);
 		kelp2.paint(g);
@@ -191,6 +195,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 				fishHit = true;
 				fish.setX((int)(Math.random()*1150));
 				fish.setVx((int)((Math.random()-0.5)*20));
+				fish.changePicture("imgs/jellFish.gif");
 			}
 			
 		}
@@ -209,6 +214,18 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		
 		if (fishFly && timer) {
 			fish.setVy(-(stage*2));
+		}
+		
+		if (!bubbleOn) {
+			bubbleOn = true;
+			bubble.setScale(1,1);
+			bubble.setY(150);
+			bubble.setX(-50-bubble.getWidth());
+			bubble.setVx((int)Math.random()*(5)+1);
+		}
+		
+		if (bubble.getX()>=1200) {
+			bubbleOn = false;
 		}
 		
 		time+=20;//timer
@@ -279,8 +296,9 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		if (rMouse.intersects(rMain)&&fishHit) {
 			System.out.println("hit the fish with mouse");
 			fishFly = false;
-			fish.setVy(5);
+			fish.setVy(7);
 			fish.setVx(0);
+			fish.changePicture("imgs/jellFishFall.gif");
 			score += 50;
 			fishHit = false;
 		}
@@ -311,6 +329,11 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 			fishFly = true;
 			spaceToPlay = "";
 			fish.setVx((int)((Math.random()-0.5)*20));
+		}
+		
+		if (lose&&arg0.getKeyCode()==32) {
+			score = 0;
+			stage = 1;
 		}
 		
 		if(nextStage&&arg0.getKeyCode()==32) {
