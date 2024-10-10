@@ -155,7 +155,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		g.setFont(bigFont);
 		g.setColor(Color.black);
 		g.drawString("Time "+this.roundTimer, 400, 65);
-		g.drawString("Score " +this.score,50,65);
+		g.drawString("Score " +this.score,50,750);
 		
 		g.drawString(""+spaceToPlay, 200, 400);
 		g.drawString("Stage " +stage, 800, 65);
