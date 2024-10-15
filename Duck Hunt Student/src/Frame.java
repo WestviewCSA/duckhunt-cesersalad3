@@ -36,6 +36,9 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	SpongeBobHouse house = new SpongeBobHouse();
 	spongeBob spongeBobPlain = new spongeBob();
 	
+	//sounds(put in later)
+	Music bMusic = new Music("backgroundMusic.wav", false);
+	
 //	jellFishFall jellFall = new jellFishFall();//won't be painted
 //	
 //	explosion explosion = new explosion();//won't be painted
@@ -129,6 +132,8 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	public void paint(Graphics g) {
 		super.paintComponent(g);
 
+		
+		bMusic.run();
 
 		//layer obecjts as yoru want them to layer visualy, backroudn fist
 		ground.paint(g);
